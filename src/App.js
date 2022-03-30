@@ -1,20 +1,43 @@
 import React from "react";
-
+import styled from "styled-components";
 import { Route, Switch, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { loadWordFB } from "./redux/modules/word";
+import { db } from "./firebase";
+
 import Card from "./Card";
 import WordBox from "./WordBox";
-import { useDispatch, useSelector } from "react-redux";
 
-import styled from "styled-components";
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+} from "firebase/firestore";
 
 const App = (props) => {
     const history = useHistory();
+    const dispatch = useDispatch();
+    React.useEffect(() => {
+        dispatch(loadWordFB());
+    }, []);
 
     return (
         <Container>
             <TitleBox>
                 <Title>영어 단어장</Title>
             </TitleBox>
+            <Button
+                onClick={() => {
+                    history.push("/newWord/:wordNum");
+                }}
+            >
+                +
+            </Button>
             <Switch>
                 <Content>
                     <Route path="/" exact component={Card} />
@@ -22,13 +45,6 @@ const App = (props) => {
                     <Route path="/newWord/:wordNum" component={WordBox} />
                 </Content>
             </Switch>
-            <button
-                onClick={() => {
-                    history.push("/newWord/:wordNum");
-                }}
-            >
-                단어추가하기
-            </button>
         </Container>
     );
 };
@@ -65,4 +81,20 @@ const Content = styled.div`
     justify-content: center;
 `;
 
+const Button = styled.button`
+    background-color: deepskyblue;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    border: none;
+    font-size: 40px;
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    &:hover {
+        background: red;
+        cursor: pointer;
+    }
+`;
 export default App;

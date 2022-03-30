@@ -11,6 +11,7 @@ const Card = (props) => {
     const dispatch = useDispatch();
     //리덕스스토어에서 리스트 불러오기
     const wordsList = useSelector((state) => state.word.list);
+    console.log(wordsList);
     //저장하기 함수
     const removeWordcard = (index) => {
         dispatch(removeWord(index));

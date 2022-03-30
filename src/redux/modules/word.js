@@ -1,6 +1,16 @@
 // widgets.js
-
+import { db } from "../../firebase";
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+} from "firebase/firestore";
 // Actions
+const LOAD = "word/LOAD";
 const CREATE = "word/CREATE";
 const REMOVE = "word/REMOVE";
 const COMPLETED = "word/COMPLETED";
@@ -9,6 +19,10 @@ const UPDATE = "word/UPDATE";
 // const REMOVE = "my-app/widgets/REMOVE";
 
 // Action Creators
+export function loadWord(wordLists) {
+    return { type: LOAD, wordLists };
+}
+
 export function createWord(word) {
     console.log(word);
     return { type: CREATE, word };
@@ -41,15 +55,49 @@ const initialState = {
         // },
     ],
 };
+
+// middlewares
+export const loadWordFB = () => {
+    return async function (dispatch) {
+        const words_data = await getDocs(collection(db, "wordList"));
+        // console.log(words_data);
+
+        let wordLists = [];
+
+        words_data.forEach((doc) => {
+            wordLists.push({ ...doc.data() });
+        });
+
+        dispatch(loadWord(wordLists));
+    };
+};
+
+export const createWordFB = (wordList) => {
+    return async function (dispatch) {
+        const docRef = await addDoc(collection(db, "wordList"), wordList);
+        const _wordList = await getDoc(docRef);
+        const wordLists = {
+            voca: { id: _wordList.id, ..._wordList.data() },
+            completed: false,
+        };
+        console.log(wordLists);
+
+        dispatch(createWord(wordLists));
+    };
+};
+
 // Reducer
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
+        case "word/LOAD": {
+            return { list: action.wordLists };
+        }
         case "word/CREATE": {
+            console.log(action.word);
             const new_wordList = [
                 ...state.list,
                 {
-                    voca: { ...action.word, id: state.list.length },
-                    completed: false,
+                    ...action.word,
                 },
             ];
             console.log(new_wordList);

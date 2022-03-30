@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createWord, updatedWord } from "./redux/modules/word";
+import { createWord, updatedWord, createWordFB } from "./redux/modules/word";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -31,7 +31,8 @@ const WordBox = (props) => {
     // 저장, 수정할 단어를 리덕스에 디스패치한다.
     const dispatch = useDispatch();
     const saveWord = (form) => {
-        dispatch(createWord(form));
+        dispatch(createWordFB(form));
+        // dispatch(createWord(form));
     };
     const updateWord = (form) => {
         dispatch(updatedWord(form, wordNum));
@@ -49,7 +50,7 @@ const WordBox = (props) => {
 
             <form onSubmit={handleSubmit}>
                 <TextBox>
-                    <label>
+                    <Label>
                         단어
                         <Line
                             type="text"
@@ -57,10 +58,10 @@ const WordBox = (props) => {
                             value={form.name}
                             onChange={handleChange}
                         />
-                    </label>
+                    </Label>
                 </TextBox>
                 <TextBox>
-                    <label>
+                    <Label>
                         발음
                         <Line
                             type="text"
@@ -68,10 +69,10 @@ const WordBox = (props) => {
                             value={form.sign}
                             onChange={handleChange}
                         />
-                    </label>
+                    </Label>
                 </TextBox>
                 <TextBox>
-                    <label>
+                    <Label>
                         의미
                         <Line
                             type="text"
@@ -79,10 +80,10 @@ const WordBox = (props) => {
                             value={form.meaning_name}
                             onChange={handleChange}
                         />
-                    </label>
+                    </Label>
                 </TextBox>
                 <TextBox>
-                    <label>
+                    <Label>
                         예문
                         <Line
                             type="text"
@@ -90,10 +91,10 @@ const WordBox = (props) => {
                             value={form.sentence}
                             onChange={handleChange}
                         />
-                    </label>
+                    </Label>
                 </TextBox>
                 <TextBox>
-                    <label>
+                    <Label>
                         해석
                         <Line
                             type="text"
@@ -101,11 +102,11 @@ const WordBox = (props) => {
                             value={form.meaning_sentence}
                             onChange={handleChange}
                         />
-                    </label>
+                    </Label>
                 </TextBox>
-                <div>
-                    <button type="submit">저장하기</button>
-                </div>
+                <SaveBox>
+                    <Save type="submit">저장하기</Save>
+                </SaveBox>
             </form>
         </Container>
     );
@@ -114,7 +115,8 @@ const WordBox = (props) => {
 const Container = styled.div`
     background-color: aliceblue;
     width: 100vw;
-    max-width: 400px;
+    height: 60vh;
+    max-width: 500px;
     margin: 50px auto;
     display: flex;
     flex-direction: column;
@@ -122,26 +124,43 @@ const Container = styled.div`
     // justify-content: center;
 `;
 const Title = styled.div`
-    font-size: 20px;
-    margin: 20px;
+    font-size: 25px;
+    margin: 50px auto;
 `;
 
 const TextBox = styled.div`
-    width: 100%;
+    // width: 100%;
     margin: 10px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    // flex-direction: column;
+    // justify-content: center;
 `;
 
+const Label = styled.label`
+    // display: block;
+    width: 60vw;
+    max-width: 450px;
+    height: 60px;
+`;
 const Line = styled.input`
-    display: block;
-    width: 90%;
+    // display: block;
+    width: 100%;
     height: 30px;
     font-size: 20px;
-    margin: 0 10px;
+    // margin: 0 auto;
     background: transparent;
     border: none;
     border-bottom: 2px solid #ccc;
 `;
+
+const SaveBox = styled.div`
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Save = styled.button``;
+
 export default WordBox;
