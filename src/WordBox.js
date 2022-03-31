@@ -112,6 +112,9 @@ const WordBox = (props) => {
                 </TextBox>
                 <SaveBox>
                     <Save type="submit">저장하기</Save>
+                    <Save type="button" onClick={() => history.push("/")}>
+                        뒤로가기
+                    </Save>
                 </SaveBox>
             </form>
         </Container>
@@ -162,9 +165,9 @@ const Line = styled.input`
 const SaveBox = styled.div`
     height: 100px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
 `;
 
 const Save = styled.button``;

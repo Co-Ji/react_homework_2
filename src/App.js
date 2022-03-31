@@ -15,7 +15,7 @@ const App = (props) => {
     return (
         <Container>
             <TitleBox>
-                <Title>영어 단어장</Title>
+                <Title onClick={() => history.push("/")}>영어 단어장</Title>
             </TitleBox>
             <Button
                 onClick={() => {
@@ -54,6 +54,7 @@ const Title = styled.h1`
     width: 100%;
     text-align: center;
     margin: 10px auto;
+    cursor: pointer;
 `;
 
 const Content = styled.div`
