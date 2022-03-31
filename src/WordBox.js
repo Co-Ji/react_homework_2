@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { createWord, updatedWord, createWordFB } from "./redux/modules/word";
+import { createWordFB, updatedWordFB } from "./redux/modules/word";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const WordBox = (props) => {
-    //수정할 단어의 인덱스와 수정할 단어
+    const history = useHistory();
+    //수정할 단어의 인덱스와 수정할 단어, 수정할 단어의 아이디.
     const wordNum = props.match.params.wordNum;
     const presentWord = useSelector((state) => state.word.list[wordNum]?.voca);
+    const presentWordId = useSelector((state) => state.word.list[wordNum]?.id);
     //수정해야 하는 페이지일 경우 기존에 저장된 단어를 불러온다.
     useEffect(() => {
         if (isNaN(wordNum)) {
@@ -22,6 +25,7 @@ const WordBox = (props) => {
         meaning_name: "",
         sentence: "",
         meaning_sentence: "",
+        completed: false,
     });
     //각각 input에 입력한 값을 넣기 위한 함수
     const handleChange = (e) => {
@@ -32,10 +36,12 @@ const WordBox = (props) => {
     const dispatch = useDispatch();
     const saveWord = (form) => {
         dispatch(createWordFB(form));
-        // dispatch(createWord(form));
+        window.alert("저장완료!");
     };
     const updateWord = (form) => {
-        dispatch(updatedWord(form, wordNum));
+        dispatch(updatedWordFB(form, presentWordId));
+        window.alert("수정완료!");
+        props.history.push("/");
     };
 
     // 저장하기 버튼을 누를 때 저장하기 위한 함수

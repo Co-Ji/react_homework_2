@@ -15,8 +15,6 @@ const CREATE = "word/CREATE";
 const REMOVE = "word/REMOVE";
 const COMPLETED = "word/COMPLETED";
 const UPDATE = "word/UPDATE";
-// const UPDATE = "my-app/widgets/UPDATE";
-// const REMOVE = "my-app/widgets/REMOVE";
 
 // Action Creators
 export function loadWord(wordLists) {
@@ -24,48 +22,34 @@ export function loadWord(wordLists) {
 }
 
 export function createWord(word) {
-    console.log(word);
     return { type: CREATE, word };
 }
 
-export function removeWord(word) {
-    return { type: REMOVE, word };
+export function removeWord(wordId) {
+    return { type: REMOVE, wordId };
 }
 
-export function completedWord(word) {
-    return { type: COMPLETED, word };
+export function completedWord(wordId) {
+    return { type: COMPLETED, wordId };
 }
 
-export function updatedWord(word) {
-    return { type: UPDATE, word };
+export function updatedWord(word, wordId) {
+    return { type: UPDATE, word: word, wordId };
 }
 
 const initialState = {
-    list: [
-        // {
-        //     voca: {
-        //         name: "name",
-        //         sign: "[neim]",
-        //         meaning_name: "이름",
-        //         sentence: "my name is",
-        //         meaning_sentence: "내 이름은 ~이다",
-        //         id: "name",
-        //     },
-        //     completed: false,
-        // },
-    ],
+    list: [],
 };
 
 // middlewares
 export const loadWordFB = () => {
     return async function (dispatch) {
         const words_data = await getDocs(collection(db, "wordList"));
-        // console.log(words_data);
 
         let wordLists = [];
 
         words_data.forEach((doc) => {
-            wordLists.push({ ...doc.data() });
+            wordLists.push({ voca: doc.data(), id: doc.id });
         });
 
         dispatch(loadWord(wordLists));
@@ -77,12 +61,41 @@ export const createWordFB = (wordList) => {
         const docRef = await addDoc(collection(db, "wordList"), wordList);
         const _wordList = await getDoc(docRef);
         const wordLists = {
-            voca: { id: _wordList.id, ..._wordList.data() },
-            completed: false,
+            id: docRef.id,
+            voca: (await getDoc(docRef)).data(),
         };
-        console.log(wordLists);
-
         dispatch(createWord(wordLists));
+    };
+};
+
+export const completedWordFB = (wordList_id) => {
+    return async function (dispatch, getState) {
+        //FB에서 수정할 리스트 불러오기
+        const docRef = doc(db, "wordList", wordList_id);
+        // 불러올 때 까지 기다린 후 리스트 completed를 true로 변경
+        if ((await getDoc(docRef)).data().completed === true) {
+            await updateDoc(docRef, { completed: false });
+        } else {
+            await updateDoc(docRef, { completed: true });
+        }
+
+        dispatch(completedWord(docRef.id));
+    };
+};
+
+export const updatedWordFB = (wordList, wordList_id) => {
+    return async function (dispatch) {
+        const docRef = doc(db, "wordList", wordList_id);
+        await updateDoc(docRef, { ...wordList });
+        dispatch(updatedWord((await getDoc(docRef)).data(), docRef.id));
+    };
+};
+
+export const removeWordFB = (wordList_id) => {
+    return async function (dispatch, getState) {
+        const docRef = doc(db, "wordList", wordList_id);
+        await deleteDoc(docRef);
+        dispatch(removeWord(docRef.id));
     };
 };
 
@@ -93,57 +106,50 @@ export default function reducer(state = initialState, action = {}) {
             return { list: action.wordLists };
         }
         case "word/CREATE": {
-            console.log(action.word);
             const new_wordList = [
                 ...state.list,
                 {
                     ...action.word,
                 },
             ];
-            console.log(new_wordList);
 
             return { list: new_wordList };
         }
 
         case "word/REMOVE": {
-            // console.log(parseInt(action.word));
-
             const remove_wordList = state.list.filter(
-                (element, index) => !(index === action.word)
+                (element, index) => !(element.id === action.wordId)
             );
             return { list: remove_wordList };
         }
 
         case "word/COMPLETED": {
             const completed_wordList = state.list.map((element, index) => {
-                if (action.word === index) {
-                    if (element.completed === false) {
-                        return {
-                            voca: state.list[index].voca,
-                            completed: true,
-                        };
+                if (action.wordId === element.id) {
+                    if (element.voca.completed === false) {
+                        element.voca.completed = true;
+
+                        return element;
                     } else {
-                        return {
-                            voca: state.list[index].voca,
-                            completed: false,
-                        };
+                        element.voca.completed = false;
+                        return element;
                     }
                 } else {
                     return element;
                 }
             });
-
             return { list: completed_wordList };
         }
 
         case "word/UPDATE": {
             const updated_wordList = state.list.map((element, index) => {
-                if (action.word.id === element.voca.id) {
-                    return { voca: action.word, completed: false };
+                if (action.wordId === element.id) {
+                    return { voca: action.word, id: action.wordId };
                 } else {
                     return element;
                 }
             });
+
             return { list: updated_wordList };
         }
 

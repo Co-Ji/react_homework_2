@@ -3,28 +3,14 @@ import styled from "styled-components";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { loadWordFB } from "./redux/modules/word";
+import {} from "./redux/modules/word";
 import { db } from "./firebase";
 
 import Card from "./Card";
 import WordBox from "./WordBox";
 
-import {
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-} from "firebase/firestore";
-
 const App = (props) => {
     const history = useHistory();
-    const dispatch = useDispatch();
-    React.useEffect(() => {
-        dispatch(loadWordFB());
-    }, []);
 
     return (
         <Container>
