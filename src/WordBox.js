@@ -37,6 +37,7 @@ const WordBox = (props) => {
     const saveWord = (form) => {
         dispatch(createWordFB(form));
         window.alert("저장완료!");
+        window.location.reload();
     };
     const updateWord = (form) => {
         dispatch(updatedWordFB(form, presentWordId));
@@ -52,12 +53,13 @@ const WordBox = (props) => {
 
     return (
         <Container>
-            <Title>{isNaN(wordNum) ? "단어 추가하기" : "단어 수정하기"}</Title>
-
+            <Title style={{ fontSize: "40px" }}>
+                {isNaN(wordNum) ? "New Word" : "Correct Word"}
+            </Title>
             <form onSubmit={handleSubmit}>
                 <TextBox>
                     <Label>
-                        단어
+                        English
                         <Line
                             type="text"
                             name="name"
@@ -68,7 +70,7 @@ const WordBox = (props) => {
                 </TextBox>
                 <TextBox>
                     <Label>
-                        발음
+                        Pronunciation
                         <Line
                             type="text"
                             name="sign"
@@ -79,7 +81,7 @@ const WordBox = (props) => {
                 </TextBox>
                 <TextBox>
                     <Label>
-                        의미
+                        Korean
                         <Line
                             type="text"
                             name="meaning_name"
@@ -90,7 +92,7 @@ const WordBox = (props) => {
                 </TextBox>
                 <TextBox>
                     <Label>
-                        예문
+                        Example
                         <Line
                             type="text"
                             name="sentence"
@@ -101,7 +103,7 @@ const WordBox = (props) => {
                 </TextBox>
                 <TextBox>
                     <Label>
-                        해석
+                        Meaning
                         <Line
                             type="text"
                             name="meaning_sentence"
@@ -111,10 +113,12 @@ const WordBox = (props) => {
                     </Label>
                 </TextBox>
                 <SaveBox>
-                    <Save type="submit">저장하기</Save>
-                    <Save type="button" onClick={() => history.push("/")}>
-                        뒤로가기
-                    </Save>
+                    <Button type="submit">
+                        <ButtonIcon src="/images/save.png" alt="saveIcon" />
+                    </Button>
+                    <Button type="button" onClick={() => history.push("/")}>
+                        <ButtonIcon src="/images/home.png" alt="homeIcon" />
+                    </Button>
                 </SaveBox>
             </form>
         </Container>
@@ -122,15 +126,14 @@ const WordBox = (props) => {
 };
 
 const Container = styled.div`
-    background-color: aliceblue;
-    width: 100vw;
-    height: 60vh;
+    background-color: #ffdc90;
     max-width: 500px;
-    margin: 50px auto;
+    margin: 0 auto;
+
+    border: 1px solid pink;
+
     display: flex;
     flex-direction: column;
-    align-items: center;
-    // justify-content: center;
 `;
 const Title = styled.div`
     font-size: 25px;
@@ -138,38 +141,46 @@ const Title = styled.div`
 `;
 
 const TextBox = styled.div`
-    // width: 100%;
     margin: 10px;
     display: flex;
-    // flex-direction: column;
-    // justify-content: center;
 `;
 
 const Label = styled.label`
-    // display: block;
     width: 60vw;
     max-width: 450px;
-    height: 60px;
+    height: 70px;
+    font-size: 20px;
 `;
 const Line = styled.input`
-    // display: block;
     width: 100%;
     height: 30px;
-    font-size: 20px;
-    // margin: 0 auto;
+    font-size: 25px;
     background: transparent;
+
     border: none;
-    border-bottom: 2px solid #ccc;
+    border-bottom: 1px solid #bbb;
 `;
 
 const SaveBox = styled.div`
-    height: 100px;
+    height: 140px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
 `;
 
-const Save = styled.button``;
+const Button = styled.button`
+    background: transparent;
+    border: none;
+    cursor: pointer;
+`;
+const ButtonIcon = styled.img`
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    &:hover {
+        transform: rotate(-5deg);
+    }
+`;
 
 export default WordBox;

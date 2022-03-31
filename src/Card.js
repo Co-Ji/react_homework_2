@@ -38,69 +38,119 @@ const Card = (props) => {
     return (
         <>
             {wordsList.map((word, i) => (
-                <Box key={word.id} completed={word.voca.completed}>
-                    <Text>{word.voca.name}</Text>
-                    <Text>{word.voca.sign}</Text>
+                <CardBox key={word.id} completed={word.voca.completed}>
+                    <Text style={{ color: "red", fontSize: "3em" }}>
+                        {word.voca.name}
+                    </Text>
+                    <Text
+                        style={{
+                            marginTop: "-10px",
+                            marginBottom: "15px",
+                            color: "hotpink",
+                        }}
+                    >
+                        [{word.voca.sign}]
+                    </Text>
                     <Text>{word.voca.meaning_name}</Text>
                     <Text>{word.voca.sentence}</Text>
                     <Text>{word.voca.meaning_sentence}</Text>
                     <ButtonBox>
                         <Button onClick={() => completedWordcard(word.id)}>
-                            완
+                            <CardIcon
+                                src="/images/complete.png"
+                                alt="completeIcon"
+                            />
                         </Button>
-                        <Button onClick={() => updateWordcard(i)}>수</Button>
+                        <Button onClick={() => updateWordcard(i)}>
+                            <CardIcon
+                                src="/images/update.png"
+                                alt="updateIcon"
+                            />
+                        </Button>
                         <Button onClick={() => removeWordcard(word.id)}>
-                            삭
+                            <CardIcon
+                                src="/images/delete.png"
+                                alt="deleteIcon"
+                            />
                         </Button>
                     </ButtonBox>
-                </Box>
+                </CardBox>
             ))}
+            <AddButton
+                onClick={() => {
+                    history.push("/newWord/:wordNum");
+                }}
+            >
+                <AddIcon src="/images/addWord.png" alt="addWordIcon" />
+            </AddButton>
         </>
     );
 };
 
-const Box = styled.div`
-    width: 40vw;
-    max-width: 500px;
+const CardBox = styled.div`
+    width: 35vw;
+    max-width: 400px;
     min-width: 300px;
-    height: 150px;
+    min-height: 300px;
+    height: auto;
     margin: 10px 10px;
     padding: 10px;
 
-    border: 2px solid green;
-    border-radius: 10px;
+    border: 1px solid pink;
 
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     box-sizing: border-box;
-    justify-content: space-evenly;
+    justify-content: space-around;
 
     position: relative;
 
-    background: ${(props) => (props.completed ? "beige" : "transparent")};
+    background: ${(props) => (props.completed ? "beige" : "#ffdc90")};
 `;
 
-const Text = styled.div`
-    margin: 2px;
-    font-size: 12px;
+const Text = styled.span`
+    width: 375px;
+    margin: 1px;
+    font-size: 2em;
 `;
 
 const ButtonBox = styled.div`
-    width: 90px;
-    display: flex;
-    justify-content: space-evenly;
-
-    // background: red;
-
     position: absolute;
     top: 10px;
     right: 10px;
 `;
 
 const Button = styled.button`
-    margin: 2px;
-    width: 25px;
+    background: transparent;
+    border: none;
+`;
+
+const CardIcon = styled.img`
+    width: 26px;
+    cursor: pointer;
+    opacity: 0.4;
+    &: hover {
+        opacity: 1;
+    }
+`;
+
+const AddButton = styled.button`
+    background-color: transparent;
+    border: none;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+`;
+
+const AddIcon = styled.img`
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    &:hover {
+        transform: rotate(15deg);
+    }
 `;
 
 export default Card;
